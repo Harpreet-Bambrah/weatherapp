@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weatherapp</title>
+    <link rel="stylesheet" href="css/weatherapp.css">
+</head>
+<body>
+  <section>
+    <div class="container">
+      <div class="sub-container">
+        <div id="input-cont">
+          <input type="text" id="loc-name" name="location-name" value="Muktsar">
+          <button onclick="getlocation()" id="search-btn">Search</button>
+        </div>
+        <div id="title">
+          <h1 id="location">Muktsar</h1>
+            <p id="date-time">30 January, 3:08pm</p>
+ 
+        </div>
+          <div class="temp">
+                       <h2 id="c-temp">18<sup>°C</sup></h2>
+            <span id="feels-temp"></span>
+            <p id="temp-min-max" ></p>
+          </div>
+
+          <div class="cloud">
+            <img id="w-icon" >
+            <p id="img-dis" style="text-align: center; margin-top: 0px; margin-top: -15px;"></p>
+          </div>
+      </div>
+      <div id="current-detail"></div>
+    
+    </div>
+  </section>
+    <script>
+
+    
+      
+      function getlocation() {
+       let  location1=document.getElementById('loc-name').value
+      
+      
+
+      let currweather ;
+        fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location1},&units=metric&wind.speed.unit=imper&appid=dbdc1cf4134f3ac6426d8884d7f388ab`)
+        // fetch('http://api.weatherstack.com/current?access_key=1ed1465a233372e8c2449a10ca723059&query=muktsar')
+        .then((response)=> response.json())
+        .then( (response)=> {
+          console.log(response)
+          currweather=response;
+
+          document.getElementById('location').innerHTML=currweather.name;
+          document.getElementById('date-time').innerHTML= new Date(currweather.dt*1000).toLocaleString()+' '+'<small>Last Update..</small>';
+          document.getElementById('c-temp').innerHTML=currweather.main.temp+'<sup>°C</sup>'
+          document.getElementById('feels-temp').innerHTML='Feels like'+' '+currweather.main.feels_like+'°'
+          document.getElementById('w-icon').setAttribute('src',`http://openweathermap.org/img/wn/${currweather.weather[0].icon}@2x.png`)
+          document.getElementById('img-dis').innerHTML=currweather.weather[0].description
+          document.getElementById('current-detail').innerHTML=`Current Detail.. <br> <small><br>Humidity : ${currweather.main.humidity}%<br>Pressure : ${currweather.main.pressure}mBar<br>Visibilty : ${currweather.visibility/1000} km <br> Wind Speed : ${Math.round(currweather.wind.speed*3600/1000)} kms/hr <br>Sunrise Time : ${new Date(currweather.sys.sunrise*1000).toLocaleTimeString()}<br>Sunset Time : ${new Date(currweather.sys.sunset*1000).toLocaleTimeString()}<br><br><br><i>Source: openweathermap.org</i></small>`
+        });
+
+      }
+
+ getlocation()
+    
+// new Date(1674874891*1000).toLocaleDateString()
+  </script>
+</body>
+</html>
